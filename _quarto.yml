@@ -1,0 +1,15 @@
+project:
+  type: manuscript
+  output-dir: docs
+
+manuscript:
+  article: index.qmd
+  # code-links: repo
+
+format:
+  html:
+    toc: true
+    number-sections: true
+    css: "./style.css"
+    mainfont: "Caslon, serif"
+  pdf: default
