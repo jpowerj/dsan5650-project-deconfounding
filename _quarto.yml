@@ -4,7 +4,7 @@ project:
 
 manuscript:
   article: index.qmd
-  # code-links: repo
+  code-links: repo
 
 format:
   html:
