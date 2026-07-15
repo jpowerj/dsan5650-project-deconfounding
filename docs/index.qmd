@@ -203,7 +203,47 @@ We next adopt a more systematic approach to deal with influential observations, 
 
 In all four of the regressions with omitted observations, the ruggedness coefficient remains negative and, except in column (1), statistically significant. The ruggedness interaction remains positive and statistically significant, confirming that there exists a differential effect of ruggedness for Africa.
 
-The reason why, in figure 2, a small number of observations appear as particularly influential is because the ruggedness measure is skewed to the left, leaving a small number of observations with large values. We remedy this in two ways. First, we take the natural log of ruggedness and use this in the estimating equations. This draws in the outlying observations in the regression. The estimates of interest, reported in columns (5) and (6), remain robust to this transformation. However, looking at the natural log of ruggedness variable, one finds that the measure is no longer left skewed, but it is now right skewed, with a small number of influential observations taking on very small values. Because of this, we pursue a second strategy where we perform a zero skewness Box-Cox power transformation on the ruggedness variable to obtain a measure with zero skewness. The relationships between income and the zero-skewness ruggedness measure are shown in figure 3. It is evident that the income-ruggedness relationships using zero-skewness measure do not feature influential, outlying observations. In addition, a different relationship within Africa and outside of Africa is still apparent in the scatter plots of the data. Estimates using the zero-skewness measure are reported in columns (7) and (8). The estimates confirm the impression given by the figures. There is a positive and significant differential effect of ruggedness within Africa.
+The reason why, in figure 2, a small number of observations appear as particularly influential is because the ruggedness measure is skewed to the left, leaving a small number of observations with large values. We remedy this in two ways. First, we take the natural log of ruggedness and use this in the estimating equations. This draws in the outlying observations in the regression. The estimates of interest, reported in columns (5) and (6), remain robust to this transformation. However, looking at the natural log of ruggedness variable, one finds that the measure is no longer left skewed, but it is now right skewed, with a small number of influential observations taking on very small values. Because of this, we pursue a second strategy where we perform a zero skewness Box-Cox power transformation on the ruggedness variable to obtain a measure with zero skewness. The relationships between income and the zero-skewness ruggedness measure are shown in @fig-3. It is evident that the income-ruggedness relationships using zero-skewness measure do not feature influential, outlying observations. In addition, a different relationship within Africa and outside of Africa is still apparent in the scatter plots of the data. Estimates using the zero-skewness measure are reported in columns (7) and (8). The estimates confirm the impression given by the figures. There is a positive and significant differential effect of ruggedness within Africa.
+
+```{r, dev = "svg", dev.args=list(bg="transparent")}
+#| label: fig-3
+#| warning: false
+#| code-fold: true
+#| fig-align: center
+#| fig-cap: Results from @nunn_ruggedness_2012, where the causal impact of terrain ruggedness on present-day GDP per capita **reverses direction** when considering African vs. non-African countries!
+library(tidyverse) |> suppressPackageStartupMessages()
+rug_df <- read_csv("assets/rugged_data.csv", show_col_types=FALSE)
+# Compute Box-Cox params
+bc_params <- car::powerTransform(
+  object = cbind(
+    rug_df$rgdppc_2000,
+    rug_df$rugged
+  )
+)
+rug_df <- rug_df |> mutate(
+  continent = ifelse(cont_africa == 1, "African", "Non-African"),
+  gdpc_transformed = rgdppc_2000_m ^ bc_params$lambda[1],
+  rugged_transformed = rugged ^ bc_params$lambda[2],
+)
+rug_df |> ggplot(aes(
+  x = rugged_transformed,
+  y = gdpc_transformed
+)) +
+  geom_text(aes(label=isocode), size=3) +
+  geom_smooth(method="lm", fullrange=TRUE) +
+  facet_wrap(~ continent) +
+  theme_classic() +
+  theme(
+    panel.background = ggplot2::element_rect(fill='transparent'),
+    plot.background = ggplot2::element_rect(fill='transparent', color=NA),
+    plot.title = element_text(hjust=0.5),
+  ) +
+  labs(
+    title="Differential Effects of Ruggedness by Continent",
+    x="Terrain Ruggedness",
+    y="Log GDP Per Capita, 2000",
+  )
+```
 
 ### Is the effect of ruggedness also different for other areas?
 

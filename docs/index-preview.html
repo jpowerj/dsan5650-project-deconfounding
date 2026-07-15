@@ -23,6 +23,41 @@
         margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
         vertical-align: middle;
       }
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
       /* CSS for citations */
       div.csl-bib-body { }
       div.csl-entry {
@@ -456,7 +491,67 @@ Table&nbsp;1: The direct and indirect effects of ruggedness
 <p>Next, we check whether the results from <a href="#tbl-1" class="quarto-xref">Table&nbsp;1</a> are driven by some particularly influential outliers. Figure 2 shows a scatter plot of income per person against ruggedness for African countries (top panel) and non-African countries (bottom panel). In these plots of the raw data, one observes a positive relationship for African countries and a negative relationship for non-African countries. However, a number of observations appear as clear outliers in terms of their ruggedness, particularly, Lesotho and the Seychelles in Africa, and Switzerland, Nepal, Tajikistan, and Kyrgyzstan outside of Africa. Our first sensitivity check estimates our baseline specification after dropping these six observations, without and with our full set of control variables. Results are presented in columns (1) and (2) of table 2.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
 <p>We next adopt a more systematic approach to deal with influential observations, and remove influential observations using each observation’s <code>DFBETA</code>, which is a measure of the difference in the estimated coefficient for the ruggedness interaction (scaled by the standard error) when the observation is included and when it is excluded. Following Belsley, Kuh, and Welsch (1980), we omit all observations for which <span class="math inline">\(|\texttt{DFBETA}_i| &gt; 2 / \sqrt{N}\)</span>, where <span class="math inline">\(N\)</span> is the number of observations, in our case 170.<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> Results are presented in columns (3) and (4) of table 2.</p>
 <p>In all four of the regressions with omitted observations, the ruggedness coefficient remains negative and, except in column (1), statistically significant. The ruggedness interaction remains positive and statistically significant, confirming that there exists a differential effect of ruggedness for Africa.</p>
-<p>The reason why, in figure 2, a small number of observations appear as particularly influential is because the ruggedness measure is skewed to the left, leaving a small number of observations with large values. We remedy this in two ways. First, we take the natural log of ruggedness and use this in the estimating equations. This draws in the outlying observations in the regression. The estimates of interest, reported in columns (5) and (6), remain robust to this transformation. However, looking at the natural log of ruggedness variable, one finds that the measure is no longer left skewed, but it is now right skewed, with a small number of influential observations taking on very small values. Because of this, we pursue a second strategy where we perform a zero skewness Box-Cox power transformation on the ruggedness variable to obtain a measure with zero skewness. The relationships between income and the zero-skewness ruggedness measure are shown in figure 3. It is evident that the income-ruggedness relationships using zero-skewness measure do not feature influential, outlying observations. In addition, a different relationship within Africa and outside of Africa is still apparent in the scatter plots of the data. Estimates using the zero-skewness measure are reported in columns (7) and (8). The estimates confirm the impression given by the figures. There is a positive and significant differential effect of ruggedness within Africa.</p>
+<p>The reason why, in figure 2, a small number of observations appear as particularly influential is because the ruggedness measure is skewed to the left, leaving a small number of observations with large values. We remedy this in two ways. First, we take the natural log of ruggedness and use this in the estimating equations. This draws in the outlying observations in the regression. The estimates of interest, reported in columns (5) and (6), remain robust to this transformation. However, looking at the natural log of ruggedness variable, one finds that the measure is no longer left skewed, but it is now right skewed, with a small number of influential observations taking on very small values. Because of this, we pursue a second strategy where we perform a zero skewness Box-Cox power transformation on the ruggedness variable to obtain a measure with zero skewness. The relationships between income and the zero-skewness ruggedness measure are shown in <a href="#fig-3" class="quarto-xref">Figure&nbsp;2</a>. It is evident that the income-ruggedness relationships using zero-skewness measure do not feature influential, outlying observations. In addition, a different relationship within Africa and outside of Africa is still apparent in the scatter plots of the data. Estimates using the zero-skewness measure are reported in columns (7) and (8). The estimates confirm the impression given by the figures. There is a positive and significant differential effect of ruggedness within Africa.</p>
+<div class="cell-container code-fold"><div class="cell-decorator"><pre>In [1]:</pre></div><div id="cell-fig-3" class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="sc">|&gt;</span> <span class="fu">suppressPackageStartupMessages</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rug_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"assets/rugged_data.csv"</span>, <span class="at">show_col_types=</span><span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Box-Cox params</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>bc_params <span class="ot">&lt;-</span> car<span class="sc">::</span><span class="fu">powerTransform</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> <span class="fu">cbind</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    rug_df<span class="sc">$</span>rgdppc_2000,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    rug_df<span class="sc">$</span>rugged</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>rug_df <span class="ot">&lt;-</span> rug_df <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">continent =</span> <span class="fu">ifelse</span>(cont_africa <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"African"</span>, <span class="st">"Non-African"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">gdpc_transformed =</span> rgdppc_2000_m <span class="sc">^</span> bc_params<span class="sc">$</span>lambda[<span class="dv">1</span>],</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">rugged_transformed =</span> rugged <span class="sc">^</span> bc_params<span class="sc">$</span>lambda[<span class="dv">2</span>],</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>rug_df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> rugged_transformed,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> gdpc_transformed</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label=</span>isocode), <span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"lm"</span>, <span class="at">fullrange=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> continent) <span class="sc">+</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> ggplot2<span class="sc">::</span><span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">'transparent'</span>),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.background =</span> ggplot2<span class="sc">::</span><span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">'transparent'</span>, <span class="at">color=</span><span class="cn">NA</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust=</span><span class="fl">0.5</span>),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title=</span><span class="st">"Differential Effects of Ruggedness by Continent"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x=</span><span class="st">"Terrain Ruggedness"</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y=</span><span class="st">"Log GDP Per Capita, 2000"</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 75 rows containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 75 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="">
+<a href="index_files/figure-html/fig-3-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Results from @nunn_ruggedness_2012, where the causal impact of terrain ruggedness on present-day GDP per capita reverses direction when considering African vs.&nbsp;non-African countries!"><img src="index_files/figure-html/fig-3-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Results from <span class="citation" data-cites="nunn_ruggedness_2012">Nunn and Puga (<a href="#ref-nunn_ruggedness_2012" role="doc-biblioref">2012</a>)</span>, where the causal impact of terrain ruggedness on present-day GDP per capita <strong>reverses direction</strong> when considering African vs.&nbsp;non-African countries!
+</figcaption>
+</figure>
+</div>
+</div>
+</div></div>
 </section>
 <section id="is-the-effect-of-ruggedness-also-different-for-other-areas" class="level3" data-number="4.3">
 <h3 data-number="4.3" class="anchored" data-anchor-id="is-the-effect-of-ruggedness-also-different-for-other-areas"><span class="header-section-number">4.3</span> Is the effect of ruggedness also different for other areas?</h3>
@@ -522,6 +617,9 @@ Gallup, John Luke, and Jeffrey D. Sachs. 2001. <span>“<a href="https://www.ncb
 </div>
 <div id="ref-nunn_longterm_2008" class="csl-entry" role="listitem">
 Nunn, Nathan. 2008. <span>“<a href="https://doi.org/10.1162/qjec.2008.123.1.139">The <span>Long-Term Effects</span> of <span>Africa</span>’s <span>Slave Trades</span></a>.”</span> <em>Quarterly Journal of Economics</em> 123 (1): 139–76.
+</div>
+<div id="ref-nunn_ruggedness_2012" class="csl-entry" role="listitem">
+Nunn, Nathan, and Diego Puga. 2012. <span>“<a href="https://www.jstor.org/stable/41349158">Ruggedness: <span>The Blessing</span> of <span>Bad Geography</span> in <span>Africa</span></a>.”</span> <em>The Review of Economics and Statistics</em> 94 (1): 20–36.
 </div>
 <div id="ref-sachs_end_2005" class="csl-entry" role="listitem">
 Sachs, Jeffrey. 2005. <em><a href="https://books.google.com?id=uzhveDZnv_gC">The <span>End</span> of <span>Poverty</span>: <span>How We Can Make</span> It <span>Happen</span> in <span>Our Lifetime</span></a></em>. Penguin Books Limited.
